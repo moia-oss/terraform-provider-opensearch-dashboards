@@ -51,7 +51,7 @@ release:
   # Explicit set the repo to release from. Default is origin.
   github:
     owner: moia-oss
-    name: terraform-provider-opensearch
+    name: terraform-provider-opensearch-dashboards
   # Visit your project's GitHub Releases page to publish this release.
   draft: true
 changelog:
