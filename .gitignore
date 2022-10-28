@@ -1,0 +1,30 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+*.out
+
+# terraform files
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+terraform.log
+crash.log
+terraform-provider-opensearch-dashboards*
+
+# IDE
+.idea
+**/.DS_Store
+.vscode
+
+.env
+dist
+
+bin/
+vendor/
+
+.envrc
