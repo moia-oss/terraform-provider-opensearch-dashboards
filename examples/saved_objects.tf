@@ -5,7 +5,7 @@ resource "opensearch_saved_object" "test-query" {
     "title" : "Test Query",
     "description" : "",
     "query" : {
-      "query" : "\"Processstate\" AND \"systemtest\"",
+      "query" : "\"firstSearchTerm\" AND \"SecondSearchTerm\"",
       "language" : "kuery"
     },
     "filters" : [
@@ -15,18 +15,18 @@ resource "opensearch_saved_object" "test-query" {
           "negate" : false,
           "disabled" : false,
           "type" : "phrase",
-          "key" : "kubernetes.labels.app",
+          "key" : "foo.key",
           "params" : {
-            "query" : "execution-coordinator"
+            "query" : "value-to-search-for"
           }
         },
         "query" : {
           "match_phrase" : {
-            "kubernetes.labels.app" : "execution-coordinator"
+            "foo.key" : "value-to-search-for"
           }
         },
         "$state" : {
-          "store" : "appState"
+          "store" : "fooState"
         }
       }
     ]
