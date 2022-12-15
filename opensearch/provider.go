@@ -73,7 +73,7 @@ func providerConfigure(_ context.Context, d *schema.ResourceData) (any, diag.Dia
 	if err != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  "Failed to get AWS credentials via the default chain",
+			Summary:  "Could not create sigv4 HTTP request signer",
 			Detail:   err.Error(),
 		})
 		return nil, diags
