@@ -3,8 +3,8 @@ terraform {
   backend "local" {}
   required_providers {
     opensearch = {
-      source  = "hashicorp.com/edu/opensearch"
-      version = "0.3.1"
+      source  = "moia-oss/opensearch-dashboards"
+      version = "~> 0.10"
     }
   }
 }
