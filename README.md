@@ -63,6 +63,13 @@ provider. To specify a particular provider version when installing released prov
 
 To instead use a custom-built provider in your Terraform environment (e.g. the provider binary from the build instructions above), follow the instructions to [install it as a plugin](https://www.terraform.io/docs/plugins/basics.html#installing-plugins). After placing the custom-built provider into your plugins' directory, run `terraform init` to initialize it.
 
+## Releasing a new provider version
+
+The release of the provider is done automatically with a [GitHub action](.github/workflows/release.yaml). The workflow gets triggered if a new tag is created.
+Tags can be created with the GitHub web UI or the command line.
+
+The release is signed with a GPG key that is stored as a repository secret and in [terraform](https://registry.terraform.io/providers/moia-oss/opensearch-dashboards/). 
+
 ## Contributing
 
 We really appreciate your help!
