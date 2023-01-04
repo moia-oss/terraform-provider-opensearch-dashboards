@@ -27,12 +27,12 @@ your existing [GOPATH](http://golang.org/doc/code.html#GOPATH). The instructions
 home directory outside the standard GOPATH (i.e `$HOME/development/terraform-providers/`).
 
 ```sh
-$ git clone git@github.com:moia-oss/terraform-provider-opensearch.git
-$ cd terraform-provider-opensearch
+$ git clone git@github.com:moia-oss/terraform-provider-opensearch-dashboards.git
+$ cd terraform-provider-opensearch-dashboards
 ...
 ```
 
-Enter the provider directory and run `make install`. This will install the needed tools for the provider.
+`make install` will install the needed tools for the provider.
 
 ```sh
 $ make install
@@ -44,7 +44,7 @@ directory. The provider will be compiled for different supported architectures a
 ```sh
 $ make release
 ...
-$ ./bin/terraform-provider-opensearch_<version>_<os>_<arch>
+$ ./bin/terraform-provider-opensearch-dashboards_<version>_<os>_<arch>
 ...
 ```
 
@@ -67,8 +67,7 @@ To instead use a custom-built provider in your Terraform environment (e.g. the p
 
 We really appreciate your help!
 
-To contribute, please read the contribution
-guidelines: [Contributing to Terraform - OpenSearch Provider](.github/CONTRIBUTING.md)
+To contribute, simply make a PR and a maintainer will review it shortly.
 
 Issues on GitHub are intended to be related to the bugs or feature requests with provider codebase.
 See [Plugin SDK Community](https://www.terraform.io/community)
