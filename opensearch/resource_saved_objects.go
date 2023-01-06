@@ -57,6 +57,10 @@ func resourceSavedObjects() *schema.Resource {
 							Type:     schema.TypeString,
 							Required: true,
 						},
+						"name": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
 						"type": {
 							Type:     schema.TypeString,
 							Required: true,
