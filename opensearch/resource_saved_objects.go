@@ -105,11 +105,12 @@ func resourceSavedObjectsToRequest(resource *schema.ResourceData) (*saved_object
 	if refsAny, ok := resource.GetOk("references"); ok {
 		var refs []saved_objects.Reference
 
-		for _, rAny := range refsAny.([]any) {
+		for _, rAny := range refsAny.(*schema.Set).List() {
 			rMap := rAny.(map[string]any)
 
 			refs = append(refs, saved_objects.Reference{
 				ID:   rMap["id"].(string),
+				Name: rMap["name"].(string),
 				Type: rMap["type"].(string),
 			})
 		}
