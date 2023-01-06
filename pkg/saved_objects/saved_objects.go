@@ -21,6 +21,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -108,8 +109,15 @@ func (p *SavedObjectsProvider) SaveObject(ctx context.Context, obj *SavedObjectO
 	req.Header.Set("Content-Type", "application/json")
 
 	res, err := p.httpClient.Do(req)
-	if err != nil || res.StatusCode != http.StatusOK {
-		return diag.FromErr(fmt.Errorf("request failed, err %s, statuscode %d, url %s\npayload: %s", err, res.StatusCode, req.URL.String(), string(jsonBytes)))
+	if err != nil {
+		return diag.FromErr(fmt.Errorf("POST request failed, err %s, statuscode %d, url %s\nrequest_body: %s", err, res.StatusCode, req.URL.String(), string(jsonBytes)))
+	}
+	if res.StatusCode != http.StatusOK {
+		rawBody, bodyReadErr := io.ReadAll(res.Body)
+		if bodyReadErr != nil {
+			return diag.FromErr(fmt.Errorf("POST request failed, statuscode %d, url %s\nrequest_body: %s", err, req.URL.String(), string(jsonBytes)))
+		}
+		return diag.FromErr(fmt.Errorf("POST request failed, statuscode %d, url %s\nrequest_body: %s\nresponse_body: %s", res.StatusCode, req.URL.String(), string(jsonBytes), string(rawBody)))
 	}
 	return nil
 }
