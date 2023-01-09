@@ -177,6 +177,7 @@ func resourceSavedObjectRead(ctx context.Context, d *schema.ResourceData, m any)
 	for i := range resp.References {
 		a := make(map[string]any)
 		a["id"] = resp.References[i].ID
+		a["name"] = resp.References[i].Name
 		a["type"] = resp.References[i].Type
 		refs[i] = a
 	}
