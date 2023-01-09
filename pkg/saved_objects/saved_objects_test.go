@@ -24,6 +24,99 @@ import (
 	"testing"
 )
 
+func TestIgnoreFieldsOnIndexPatternProperty(t *testing.T) {
+	testCases := []struct {
+		desc         string
+		expectFields bool
+		obj          *SavedObjectOSD
+		handlerFunc  http.HandlerFunc
+		syncFields   bool
+	}{
+		{
+			desc:         "should ignore fields",
+			expectFields: false,
+			syncFields:   false,
+			obj:          &SavedObjectOSD{Type: "index-pattern", ID: "mock-pattern", SavedObjectPostPayload: SavedObjectPostPayload{Attributes: map[string]any{}, References: []Reference{}}},
+			handlerFunc: func(w http.ResponseWriter, _ *http.Request) {
+				obj := SavedObjectOSD{Type: "index-pattern", ID: "mock-pattern", SavedObjectPostPayload: SavedObjectPostPayload{Attributes: map[string]any{
+					"fields": map[string]interface{}{
+						"fieldA": "Hello world",
+					},
+				}, References: []Reference{}}}
+				b, err := json.Marshal(&obj)
+				if err != nil {
+					w.WriteHeader(http.StatusOK)
+				}
+				w.Write(b)
+			},
+		},
+		{
+			desc:         "should not ignore fields on other types",
+			expectFields: true,
+			syncFields:   false,
+			obj:          &SavedObjectOSD{Type: "search", ID: "mock-search", SavedObjectPostPayload: SavedObjectPostPayload{Attributes: map[string]any{}, References: []Reference{}}},
+			handlerFunc: func(w http.ResponseWriter, _ *http.Request) {
+				obj := SavedObjectOSD{Type: "search", ID: "mock-search", SavedObjectPostPayload: SavedObjectPostPayload{Attributes: map[string]any{
+					"fields": map[string]interface{}{
+						"fieldA": "Hello world",
+					},
+				}, References: []Reference{}}}
+				b, err := json.Marshal(&obj)
+				if err != nil {
+					w.WriteHeader(http.StatusOK)
+				}
+				w.Write(b)
+			},
+		},
+		{
+			desc:         "should not ignore fields if provider is configured to sync fields",
+			expectFields: true,
+			syncFields:   true,
+			obj:          &SavedObjectOSD{Type: "index-pattern", ID: "mock-pattern", SavedObjectPostPayload: SavedObjectPostPayload{Attributes: map[string]any{}, References: []Reference{}}},
+			handlerFunc: func(w http.ResponseWriter, _ *http.Request) {
+				obj := SavedObjectOSD{Type: "index-pattern", ID: "mock-pattern", SavedObjectPostPayload: SavedObjectPostPayload{Attributes: map[string]any{
+					"fields": map[string]interface{}{
+						"fieldA": "Hello world",
+					},
+				}, References: []Reference{}}}
+				b, err := json.Marshal(&obj)
+				if err != nil {
+					w.WriteHeader(http.StatusOK)
+				}
+				w.Write(b)
+			},
+		},
+	}
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			handler := http.NewServeMux()
+			handler.HandleFunc("/_dashboards/api/saved_objects/search/mock-search", tC.handlerFunc)
+			handler.HandleFunc("/_dashboards/api/saved_objects/index-pattern/mock-pattern", tC.handlerFunc)
+
+			srv := httptest.NewServer(handler)
+			defer srv.Close()
+
+			provider := NewSavedObjectsProvider(srv.URL, http.DefaultClient, tC.syncFields)
+			obj, diag := provider.GetObject(context.TODO(), tC.obj)
+			if diag != nil {
+				t.Error(diag)
+			}
+
+			attr := map[string]interface{}{}
+			marshErr := json.Unmarshal([]byte(obj.Attributes), &attr)
+			if marshErr != nil {
+				t.Errorf("could not unmarshal '%v', %+v", obj.Attributes, marshErr)
+			}
+			_, hasFields := attr["fields"]
+
+			if tC.expectFields != hasFields {
+				t.Errorf("Expected field presence: %v but actual field presence was %v", tC.expectFields, hasFields)
+			}
+
+		})
+	}
+}
+
 func TestNewSavedObjectsProvider(t *testing.T) {
 	testCases := []struct {
 		desc       string
