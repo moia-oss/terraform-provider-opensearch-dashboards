@@ -38,7 +38,7 @@ func TestNewSavedObjectsProvider(t *testing.T) {
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.desc, func(t *testing.T) {
-			provider := NewSavedObjectsProvider(testCase.baseUrl, &testCase.httpClient)
+			provider := NewSavedObjectsProvider(testCase.baseUrl, &testCase.httpClient, false)
 			if provider == nil {
 				t.Fail()
 			}
@@ -91,7 +91,7 @@ func TestGetObject(t *testing.T) {
 			srv := httptest.NewServer(handler)
 			defer srv.Close()
 
-			provider := NewSavedObjectsProvider(srv.URL, http.DefaultClient)
+			provider := NewSavedObjectsProvider(srv.URL, http.DefaultClient, false)
 			_, diag := provider.GetObject(context.TODO(), tC.obj)
 			if tC.wantErr && diag != nil {
 				return
@@ -129,7 +129,7 @@ func TestSaveObject(t *testing.T) {
 			srv := httptest.NewServer(handler)
 			defer srv.Close()
 
-			provider := NewSavedObjectsProvider(srv.URL, http.DefaultClient)
+			provider := NewSavedObjectsProvider(srv.URL, http.DefaultClient, false)
 			diag := provider.SaveObject(context.TODO(), tC.obj)
 			if tC.wantErr && diag != nil {
 				return
@@ -183,7 +183,7 @@ func TestDeleteObject(t *testing.T) {
 			srv := httptest.NewServer(handler)
 			defer srv.Close()
 
-			provider := NewSavedObjectsProvider(srv.URL, http.DefaultClient)
+			provider := NewSavedObjectsProvider(srv.URL, http.DefaultClient, false)
 			diag := provider.DeleteObject(context.TODO(), tC.obj)
 			if tC.wantErr && diag != nil {
 				return
