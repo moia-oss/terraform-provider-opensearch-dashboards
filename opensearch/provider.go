@@ -37,6 +37,14 @@ func Provider() *schema.Provider {
 				DefaultFunc: schema.EnvDefaultFunc("OS_BASE_URL", nil),
 				Description: "The Opensearch base url",
 			},
+			"sync_index_pattern_fields": {
+				Type:      schema.TypeBool,
+				Optional:  true,
+				Sensitive: false,
+				Default:   false,
+				Description: "Usually in index-patterns the fields are automatically generated from the matched indices. " +
+					"If you instead explicitly want to track index-pattern-fields with terraform, set this value to true.",
+			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"opensearch_saved_object": resourceSavedObjects(),
@@ -97,8 +105,13 @@ func providerConfigure(_ context.Context, d *schema.ResourceData) (any, diag.Dia
 
 	cfg.RoundTripper = signer
 
+	var syncIndexPatternFields bool
+	if v, ok := d.GetOk("sync_index_pattern_fields"); ok {
+		syncIndexPatternFields = v.(bool)
+	}
+
 	// init providers
-	savedObjectsProvider := saved_objects.NewSavedObjectsProvider(cfg.BaseUrl, &http.Client{Transport: cfg.RoundTripper})
+	savedObjectsProvider := saved_objects.NewSavedObjectsProvider(cfg.BaseUrl, &http.Client{Transport: cfg.RoundTripper}, syncIndexPatternFields)
 
 	// pass providers to the client
 	client := &OpensearchDashboardsClient{

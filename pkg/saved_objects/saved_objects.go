@@ -27,15 +27,19 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 )
 
+const indexPatternType = "index-pattern"
+
 type SavedObjectsProvider struct {
-	BaseUrl    string
-	httpClient *http.Client
+	BaseUrl                string
+	httpClient             *http.Client
+	SyncIndexPatternFields bool
 }
 
-func NewSavedObjectsProvider(baseUrl string, client *http.Client) *SavedObjectsProvider {
+func NewSavedObjectsProvider(baseUrl string, client *http.Client, syncIndexPatternFields bool) *SavedObjectsProvider {
 	return &SavedObjectsProvider{
-		BaseUrl:    baseUrl,
-		httpClient: client,
+		BaseUrl:                baseUrl,
+		httpClient:             client,
+		SyncIndexPatternFields: syncIndexPatternFields,
 	}
 }
 
@@ -70,6 +74,10 @@ func (p *SavedObjectsProvider) GetObject(ctx context.Context, obj *SavedObjectOS
 	err = json.NewDecoder(res.Body).Decode(obj)
 	if err != nil {
 		return nil, diag.FromErr(fmt.Errorf("request failed, cannot decode response body, err %w ", err))
+	}
+
+	if obj.Type == indexPatternType && !p.SyncIndexPatternFields {
+		delete(obj.Attributes, "fields")
 	}
 
 	stringifiedAttributes, err := json.Marshal(obj.Attributes)
