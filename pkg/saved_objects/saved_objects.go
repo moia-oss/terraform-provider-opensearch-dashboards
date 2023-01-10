@@ -66,7 +66,7 @@ func (p *SavedObjectsProvider) GetObject(ctx context.Context, obj *SavedObjectOS
 		return nil, nil
 	}
 	if res.StatusCode != http.StatusOK {
-		return nil, diag.FromErr(fmt.Errorf("request failed, statuscode %d", err))
+		return nil, diag.FromErr(fmt.Errorf("request failed, statuscode %d", res.StatusCode))
 	}
 	// parse result
 	obj = &SavedObjectOSD{}
