@@ -60,7 +60,6 @@ func (p *SavedObjectsProvider) GetObject(ctx context.Context, obj *SavedObjectOS
 	}
 
 	res, err := p.httpClient.Do(req)
-
 	if err != nil {
 		return nil, diag.FromErr(fmt.Errorf("GET '%v' failed: %w", req.URL.String(), err))
 	}

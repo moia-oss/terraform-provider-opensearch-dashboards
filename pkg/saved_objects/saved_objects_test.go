@@ -112,7 +112,6 @@ func TestIgnoreFieldsOnIndexPatternProperty(t *testing.T) {
 			if tC.expectFields != hasFields {
 				t.Errorf("Expected field presence: %v but actual field presence was %v", tC.expectFields, hasFields)
 			}
-
 		})
 	}
 }
