@@ -44,29 +44,35 @@ func NewSavedObjectsProvider(baseUrl string, client *http.Client, syncIndexPatte
 }
 
 func (p *SavedObjectsProvider) GetObject(ctx context.Context, obj *SavedObjectOSD) (*SavedObjectTF, diag.Diagnostics) {
+	url := fmt.Sprintf("/%s/%s", obj.Type, obj.ID)
 	// build request
 	req, err := http.NewRequestWithContext(
 		ctx,
 		http.MethodGet,
-		p.URL(fmt.Sprintf("/%s/%s", obj.Type, obj.ID)),
+		p.URL(url),
 		nil,
 	)
 	req.Header.Set("osd-xsrf", "true")
 	req.Header.Set("Content-Type", "application/json")
 
 	if err != nil {
-		return nil, diag.FromErr(err)
+		return nil, diag.FromErr(fmt.Errorf("could not build request to GET %v %w", url, err))
 	}
 
 	res, err := p.httpClient.Do(req)
+
 	if err != nil {
-		return nil, diag.FromErr(fmt.Errorf("request failed, err %w ", err))
+		return nil, diag.FromErr(fmt.Errorf("GET '%v' failed: %w", req.URL.String(), err))
 	}
 	if res.StatusCode == http.StatusNotFound {
 		return nil, nil
 	}
 	if res.StatusCode != http.StatusOK {
-		return nil, diag.FromErr(fmt.Errorf("request failed, statuscode %d", err))
+		response, bodyReadErr := io.ReadAll(res.Body)
+		if bodyReadErr != nil {
+			return nil, diag.FromErr(fmt.Errorf("GET '%v' failed with status %d", req.URL.String(), res.StatusCode))
+		}
+		return nil, diag.FromErr(fmt.Errorf("GET '%v' failed with status %d\nresponse_body: %v", req.URL.String(), res.StatusCode, string(response)))
 	}
 	// parse result
 	obj = &SavedObjectOSD{}
@@ -118,14 +124,14 @@ func (p *SavedObjectsProvider) SaveObject(ctx context.Context, obj *SavedObjectO
 
 	res, err := p.httpClient.Do(req)
 	if err != nil {
-		return diag.FromErr(fmt.Errorf("POST request failed, err %s, statuscode %d, url %s\nrequest_body: %s", err, res.StatusCode, req.URL.String(), string(jsonBytes)))
+		return diag.FromErr(fmt.Errorf("POST '%s' failed, err %s, statuscode %d, \nrequest_body: %s", req.URL.String(), err, res.StatusCode, string(jsonBytes)))
 	}
 	if res.StatusCode != http.StatusOK {
 		rawBody, bodyReadErr := io.ReadAll(res.Body)
 		if bodyReadErr != nil {
-			return diag.FromErr(fmt.Errorf("POST request failed, statuscode %d, url %s\nrequest_body: %s", err, req.URL.String(), string(jsonBytes)))
+			return diag.FromErr(fmt.Errorf("POST '%s' failed with status %d\nrequest_body: %s", req.URL.String(), err, string(jsonBytes)))
 		}
-		return diag.FromErr(fmt.Errorf("POST request failed, statuscode %d, url %s\nrequest_body: %s\nresponse_body: %s", res.StatusCode, req.URL.String(), string(jsonBytes), string(rawBody)))
+		return diag.FromErr(fmt.Errorf("POST '%s' failed with status %d\nrequest_body: %s\nresponse_body: %s", req.URL.String(), res.StatusCode, string(jsonBytes), string(rawBody)))
 	}
 	return nil
 }
@@ -145,8 +151,15 @@ func (p *SavedObjectsProvider) DeleteObject(ctx context.Context, obj *SavedObjec
 	req.Header.Set("Content-Type", "application/json")
 
 	res, err := p.httpClient.Do(req)
-	if err != nil || res.StatusCode != http.StatusOK {
-		return diag.FromErr(fmt.Errorf("request failed, err %s, statuscode %d", err, res.StatusCode))
+	if err != nil {
+		return diag.FromErr(fmt.Errorf("DELETE '%s' failed, err %s, statuscode %d", req.URL.String(), err, res.StatusCode))
+	}
+	if res.StatusCode != http.StatusOK {
+		response, bodyReadErr := io.ReadAll(res.Body)
+		if bodyReadErr != nil {
+			return diag.FromErr(fmt.Errorf("DELETE '%s' failed with status %d", req.URL.String(), err))
+		}
+		return diag.FromErr(fmt.Errorf("DELETE '%s' failed with status %d\nresponse_body: %s", req.URL.String(), res.StatusCode, string(response)))
 	}
 
 	return nil
