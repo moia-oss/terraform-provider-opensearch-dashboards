@@ -5,9 +5,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"io"
 	"net/http"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 )
 
 type OpenSearchRequestBody struct {

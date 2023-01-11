@@ -18,8 +18,9 @@ limitations under the License.
 
 import (
 	"context"
-	"github.com/moia-oss/terraform-provider-opensearch-dashboards/pkg/default_index_pattern"
 	"net/http"
+
+	"github.com/moia-oss/terraform-provider-opensearch-dashboards/pkg/default_index_pattern"
 
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
