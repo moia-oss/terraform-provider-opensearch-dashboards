@@ -75,7 +75,6 @@ func (p *SavedObjectsProvider) GetObject(ctx context.Context, obj *SavedObjectOS
 	}
 	// parse result
 	obj = &SavedObjectOSD{}
-	// we need to stringify the attributes field here
 	err = json.NewDecoder(res.Body).Decode(obj)
 	if err != nil {
 		return nil, diag.FromErr(fmt.Errorf("request failed, cannot decode response body, err %w ", err))
