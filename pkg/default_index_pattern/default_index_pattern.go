@@ -15,6 +15,14 @@ type OpenSearchRequestBody struct {
 	IndexPatternId *string `json:"index_pattern_id"`
 }
 
+type httpPayload struct {
+	Changes httpPayloadChanges `json:"changes"`
+}
+
+type httpPayloadChanges struct {
+	DefaultIndex *string `json:"defaultIndex"`
+}
+
 type Provider struct {
 	Url                    string
 	httpClient             *http.Client
@@ -23,7 +31,7 @@ type Provider struct {
 
 func NewProvider(baseUrl string, client *http.Client) *Provider {
 	return &Provider{
-		Url:        fmt.Sprintf("%s/_dashboards/api/index_patterns/default", baseUrl),
+		Url:        fmt.Sprintf("%s/_dashboards/api/opensearch-dashboards/settings", baseUrl),
 		httpClient: client,
 	}
 }
@@ -52,17 +60,17 @@ func (p *Provider) GetDefaultIndexPattern(ctx context.Context) (*OpenSearchReque
 		return nil, diag.FromErr(fmt.Errorf("GET '%v' failed with status %d\nresponse_body: %v", req.URL.String(), res.StatusCode, string(response)))
 	}
 
-	result := &OpenSearchRequestBody{}
+	result := &httpPayload{}
 	err = json.NewDecoder(res.Body).Decode(result)
 	if err != nil {
 		return nil, diag.FromErr(fmt.Errorf("request failed, cannot decode response body, err %w ", err))
 	}
 
-	return result, nil
+	return &OpenSearchRequestBody{IndexPatternId: result.Changes.DefaultIndex}, nil
 }
 
 func (p *Provider) SetDefaultIndexPattern(ctx context.Context, indexPatternId *string) diag.Diagnostics {
-	requestBody := OpenSearchRequestBody{IndexPatternId: indexPatternId}
+	requestBody := httpPayload{Changes: httpPayloadChanges{DefaultIndex: indexPatternId}}
 	jsonBytes, err := json.Marshal(requestBody)
 	if err != nil {
 		return diag.Errorf("failed to encode index pattern as JSON: %+v \n%v", requestBody, err)
