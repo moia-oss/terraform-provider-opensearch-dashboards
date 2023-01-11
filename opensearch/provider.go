@@ -18,6 +18,7 @@ limitations under the License.
 
 import (
 	"context"
+	"github.com/moia-oss/terraform-provider-opensearch-dashboards/pkg/default_index_pattern"
 	"net/http"
 
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -48,6 +49,7 @@ func Provider() *schema.Provider {
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"opensearch_saved_object": resourceSavedObjects(),
+			"default_index_pattern":   resourceDefaultIndexPattern(),
 		},
 	}
 
@@ -66,7 +68,8 @@ type ProviderConfig struct {
 }
 
 type OpensearchDashboardsClient struct {
-	SavedObjects *saved_objects.SavedObjectsProvider
+	SavedObjects        *saved_objects.SavedObjectsProvider
+	DefaultIndexPattern *default_index_pattern.Provider
 }
 
 func providerConfigure(_ context.Context, d *schema.ResourceData) (any, diag.Diagnostics) {
@@ -112,10 +115,12 @@ func providerConfigure(_ context.Context, d *schema.ResourceData) (any, diag.Dia
 
 	// init providers
 	savedObjectsProvider := saved_objects.NewSavedObjectsProvider(cfg.BaseUrl, &http.Client{Transport: cfg.RoundTripper}, syncIndexPatternFields)
+	defaultIndexPatternProvider := default_index_pattern.NewProvider(cfg.BaseUrl, &http.Client{Transport: cfg.RoundTripper})
 
 	// pass providers to the client
 	client := &OpensearchDashboardsClient{
-		SavedObjects: savedObjectsProvider,
+		SavedObjects:        savedObjectsProvider,
+		DefaultIndexPattern: defaultIndexPatternProvider,
 	}
 
 	return client, nil
