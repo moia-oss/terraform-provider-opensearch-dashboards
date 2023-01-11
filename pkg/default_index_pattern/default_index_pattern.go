@@ -15,6 +15,14 @@ type OpenSearchRequestBody struct {
 	IndexPatternId *string `json:"index_pattern_id"`
 }
 
+type httpPayload struct {
+	Changes 
+}
+type httpPayloadChanges struct {
+
+}
+{“changes”:{“defaultIndex”:“applications-index-pattern”}}
+
 type Provider struct {
 	Url                    string
 	httpClient             *http.Client
@@ -23,7 +31,7 @@ type Provider struct {
 
 func NewProvider(baseUrl string, client *http.Client) *Provider {
 	return &Provider{
-		Url:        fmt.Sprintf("%s/_dashboards/api/index_patterns/default", baseUrl),
+		Url:        fmt.Sprintf("%s/_dashboards/api/opensearch-dashboards/settings", baseUrl),
 		httpClient: client,
 	}
 }
