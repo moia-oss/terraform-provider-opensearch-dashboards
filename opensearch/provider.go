@@ -49,8 +49,8 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"opensearch_saved_object": resourceSavedObjects(),
-			"default_index_pattern":   resourceDefaultIndexPattern(),
+			"opensearch_saved_object":          resourceSavedObjects(),
+			"opensearch_default_index_pattern": resourceDefaultIndexPattern(),
 		},
 	}
 
