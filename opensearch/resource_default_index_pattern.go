@@ -38,6 +38,8 @@ func defaultIndexPatternDelete(ctx context.Context, d *schema.ResourceData, m an
 		return diagnostics
 	}
 
+	d.SetId("default-pattern")
+
 	return nil
 }
 
@@ -53,8 +55,10 @@ func defaultIndexPatternRead(ctx context.Context, d *schema.ResourceData, m any)
 	}
 	err := d.Set("index_pattern_id", resp.IndexPatternId)
 	if err != nil {
-		return diag.Errorf(fmt.Sprintf("could not set index_pattern_id after fetching from api: %v+", err))
+		return diag.Errorf(fmt.Sprintf("could not read index_pattern_id after fetching from api: %v+", err))
 	}
+
+	d.SetId("default-pattern")
 
 	return nil
 }
@@ -69,10 +73,12 @@ func defaultIndexPatternWrite(ctx context.Context, d *schema.ResourceData, m any
 	patternId := d.Get("index_pattern_id").(string)
 	diagnostics := hc.DefaultIndexPattern.SetDefaultIndexPattern(ctx, &patternId)
 	if diagnostics != nil {
-		log.Error().Msgf("could not remove default index pattern. Terraform diagnostics: %v", diagnostics)
+		log.Error().Msgf("could not set default index pattern. Terraform diagnostics: %v", diagnostics)
 
 		return diagnostics
 	}
+
+	d.SetId("default-pattern")
 
 	return nil
 }
