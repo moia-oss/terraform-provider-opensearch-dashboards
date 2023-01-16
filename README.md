@@ -48,13 +48,35 @@ $ ./bin/terraform-provider-opensearch-dashboards_<version>_<os>_<arch>
 ...
 ```
 
-## Testing the Provider
-
+## Testing with Unit Tests
 In order to run unit tests, you can run `make test`.
 
 ```sh
 $ make test
 ```
+
+## Smoketest
+This provider contains a smoketest which can test that the apply works for a few default examples
+against a local opensearch-instance.
+
+### Prereqesites
+To run the smoketest you need a local opensearch. If you do not already have one running on your
+machine, follow these steps to start it:
+
+1. install podman or docker (and terraform if it's not already installed ;) )
+2. make sure that ports 9200 and 9600 are currently not in use 
+3. execute `sysctl -w vm.max_map_count=262144`
+4. run `make start_opensearch_container` (when using podman instead of docker: `make start opensearch_container CONTAINER_RUNTIME=podman`)
+
+### Running the smoketest
+
+`make smoke_test`
+
+### Cleanup
+
+When you finished testing and want to remove your local opensearch again, execute `make remove_opensearch_container`
+(or when using podman instead of docker: `make remove_opensearch_container CONTAINER_RUNTIME=podman`)
+
 
 ## Using the Provider
 
