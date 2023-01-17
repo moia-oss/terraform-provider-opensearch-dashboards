@@ -11,4 +11,5 @@ terraform {
 
 provider "opensearch" {
   base_url = "http://localhost:5601"
+  disable_authentication = true
 }
