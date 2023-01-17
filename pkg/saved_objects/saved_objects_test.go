@@ -96,16 +96,18 @@ func TestIgnoreFieldsOnIndexPatternProperty(t *testing.T) {
 			srv := httptest.NewServer(handler)
 			defer srv.Close()
 
-			provider := NewSavedObjectsProvider(srv.URL, http.DefaultClient, tC.syncFields)
+			provider := NewSavedObjectsProvider(srv.URL+"/_dashboards", http.DefaultClient, tC.syncFields)
 			obj, diag := provider.GetObject(context.TODO(), tC.obj)
 			if diag != nil {
 				t.Error(diag)
 			}
 
 			attr := map[string]interface{}{}
-			marshErr := json.Unmarshal([]byte(obj.Attributes), &attr)
-			if marshErr != nil {
-				t.Errorf("could not unmarshal '%v', %+v", obj.Attributes, marshErr)
+			if obj != nil {
+				marshErr := json.Unmarshal([]byte(obj.Attributes), &attr)
+				if marshErr != nil {
+					t.Errorf("could not unmarshal '%v', %+v", obj.Attributes, marshErr)
+				}
 			}
 			_, hasFields := attr["fields"]
 
@@ -130,7 +132,7 @@ func TestNewSavedObjectsProvider(t *testing.T) {
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.desc, func(t *testing.T) {
-			provider := NewSavedObjectsProvider(testCase.baseUrl, &testCase.httpClient, false)
+			provider := NewSavedObjectsProvider(testCase.baseUrl+"/_dashboards", &testCase.httpClient, false)
 			if provider == nil {
 				t.Fail()
 			}
@@ -183,7 +185,7 @@ func TestGetObject(t *testing.T) {
 			srv := httptest.NewServer(handler)
 			defer srv.Close()
 
-			provider := NewSavedObjectsProvider(srv.URL, http.DefaultClient, false)
+			provider := NewSavedObjectsProvider(srv.URL+"/_dashboards", http.DefaultClient, false)
 			_, diag := provider.GetObject(context.TODO(), tC.obj)
 			if tC.wantErr && diag != nil {
 				return
@@ -221,7 +223,7 @@ func TestSaveObject(t *testing.T) {
 			srv := httptest.NewServer(handler)
 			defer srv.Close()
 
-			provider := NewSavedObjectsProvider(srv.URL, http.DefaultClient, false)
+			provider := NewSavedObjectsProvider(srv.URL+"/_dashboards", http.DefaultClient, false)
 			diag := provider.SaveObject(context.TODO(), tC.obj)
 			if tC.wantErr && diag != nil {
 				return
@@ -275,7 +277,7 @@ func TestDeleteObject(t *testing.T) {
 			srv := httptest.NewServer(handler)
 			defer srv.Close()
 
-			provider := NewSavedObjectsProvider(srv.URL, http.DefaultClient, false)
+			provider := NewSavedObjectsProvider(srv.URL+"/_dashboards", http.DefaultClient, false)
 			diag := provider.DeleteObject(context.TODO(), tC.obj)
 			if tC.wantErr && diag != nil {
 				return

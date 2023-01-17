@@ -54,6 +54,14 @@ func Provider() *schema.Provider {
 				Description: "In all production environments, authentication is expected but with this flag it can be " +
 					"disabled for example for the purpose of local testing",
 			},
+			"path_prefix": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "/_dashboards",
+				Description: "prefix to be prepended to any path. The default is '/_dashboards' to prevent breaking changes " +
+					"since this is needed for AWS Opensearch on which this provider was first used. You will want to set this to an " +
+					"empty string for development on a local Opensearch for example",
+			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"opensearch_saved_object":          resourceSavedObjects(),
@@ -84,7 +92,7 @@ func providerConfigure(_ context.Context, d *schema.ResourceData) (any, diag.Dia
 	var diags diag.Diagnostics
 
 	cfg := &ProviderConfig{
-		BaseUrl:      d.Get("base_url").(string),
+		BaseUrl:      d.Get("base_url").(string) + d.Get("path_prefix").(string),
 		RoundTripper: http.DefaultTransport,
 	}
 

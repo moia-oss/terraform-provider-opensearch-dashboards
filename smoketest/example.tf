@@ -1,3 +1,12 @@
+resource "opensearch_saved_object" "applications_index_pattern" {
+  obj_id = "application-index-pattern"
+  type   = "index-pattern"
+  attributes = jsonencode({
+    "timeFieldName" : "@timestamp",
+    "title" : "applications-*" }
+  )
+}
+
 resource "opensearch_saved_object" "ref_terraform_provider_test_search" {
   obj_id = "1d2131a0-8fe9-11ed-a0ec-dd170dad7eb3"
   type   = "search"

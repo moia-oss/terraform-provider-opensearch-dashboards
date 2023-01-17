@@ -159,6 +159,6 @@ func (p *SavedObjectsProvider) DeleteObject(ctx context.Context, obj *SavedObjec
 }
 
 func (provider *SavedObjectsProvider) URL(path string) string {
-	base := fmt.Sprintf("%s/_dashboards/api/saved_objects%s", provider.BaseUrl, path)
+	base := fmt.Sprintf("%s/api/saved_objects%s", provider.BaseUrl, path)
 	return base
 }

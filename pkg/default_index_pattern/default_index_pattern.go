@@ -31,7 +31,7 @@ type Provider struct {
 
 func NewProvider(baseUrl string, client *http.Client) *Provider {
 	return &Provider{
-		Url:        fmt.Sprintf("%s/_dashboards/api/opensearch-dashboards/settings", baseUrl),
+		Url:        fmt.Sprintf("%s/api/opensearch-dashboards/settings", baseUrl),
 		httpClient: client,
 	}
 }
