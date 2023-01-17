@@ -65,7 +65,7 @@ machine, follow these steps to start it:
 
 1. install podman or docker (and terraform if it's not already installed ;) )
 2. make sure that ports 9200, 9600 and 5601 are currently not in use 
-3. execute `sysctl -w vm.max_map_count=262144`
+3. execute `sysctl -w vm.max_map_count=262144` (this will reset after reboot so add it to your .bashrc or other startup-file if needed)
 4. run `make start_opensearch_container` (when using podman instead of docker: `make start opensearch_container CONTAINER_RUNTIME=podman`)
 
 ### Running the smoketest

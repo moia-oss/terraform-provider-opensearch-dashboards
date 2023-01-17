@@ -45,8 +45,6 @@ remove_opensearch_container:
 	${CONTAINER_RUNTIME} rm opensearch
 	${CONTAINER_RUNTIME} stop opensearch_dashboards
 	${CONTAINER_RUNTIME} rm opensearch_dashboards
-	${CONTAINER_RUNTIME} network disconnect opensearch_network opensearch
-	${CONTAINER_RUNTIME} network disconnect opensearch_network opensearch_dashboards
 	${CONTAINER_RUNTIME} network rm opensearch_network
 
 # init_smoke_test always re-initializes the .terraform folder even if it is already present
