@@ -10,5 +10,5 @@ terraform {
 }
 
 provider "opensearch" {
-  base_url = "http://localhost"
+  base_url = "http://localhost:9600"
 }

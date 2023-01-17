@@ -64,13 +64,16 @@ To run the smoketest you need a local opensearch. If you do not already have one
 machine, follow these steps to start it:
 
 1. install podman or docker (and terraform if it's not already installed ;) )
-2. make sure that ports 9200 and 9600 are currently not in use 
+2. make sure that ports 9200, 9600 and 5601 are currently not in use 
 3. execute `sysctl -w vm.max_map_count=262144`
 4. run `make start_opensearch_container` (when using podman instead of docker: `make start opensearch_container CONTAINER_RUNTIME=podman`)
 
 ### Running the smoketest
 
 `make smoke_test`
+
+While actively developing this plugin if you need to run the smoke_test often you can also use
+`make smoke_test_fast` but this is not as stable, so if you run into errors, fallback to `make smoke_test`.
 
 ### Cleanup
 

@@ -18,6 +18,7 @@ limitations under the License.
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/moia-oss/terraform-provider-opensearch-dashboards/pkg/default_index_pattern"
@@ -40,12 +41,18 @@ func Provider() *schema.Provider {
 				Description: "The Opensearch base url",
 			},
 			"sync_index_pattern_fields": {
-				Type:      schema.TypeBool,
-				Optional:  true,
-				Sensitive: false,
-				Default:   false,
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
 				Description: "Usually in index-patterns the fields are automatically generated from the matched indices. " +
 					"If you instead explicitly want to track index-pattern-fields with terraform, set this value to true.",
+			},
+			"disable_authentication": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+				Description: "In all production environments, authentication is expected but with this flag it can be " +
+					"disabled for example for the purpose of local testing",
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
@@ -81,32 +88,20 @@ func providerConfigure(_ context.Context, d *schema.ResourceData) (any, diag.Dia
 		RoundTripper: http.DefaultTransport,
 	}
 
-	sess, err := session.NewSession()
+	var disableAuthentication bool
+	if v, ok := d.GetOk("disable_authentication"); ok {
+		disableAuthentication = v.(bool)
+	}
+
+	signer, err := getRoundTripper(disableAuthentication)
 	if err != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  "Failed to get AWS credentials via the default chain",
+			Summary:  "could not create round-tripper for request-signing: " + err.Error(),
 			Detail:   err.Error(),
 		})
 		return nil, diags
 	}
-
-	signer, err := sigv4.NewSigner(
-		&sigv4.Config{
-			Service: "es",
-			Region:  *sess.Config.Region,
-		},
-		sess.Config.Credentials,
-		http.DefaultTransport)
-	if err != nil {
-		diags = append(diags, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  "Could not create sigv4 HTTP request signer",
-			Detail:   err.Error(),
-		})
-		return nil, diags
-	}
-
 	cfg.RoundTripper = signer
 
 	var syncIndexPatternFields bool
@@ -125,4 +120,28 @@ func providerConfigure(_ context.Context, d *schema.ResourceData) (any, diag.Dia
 	}
 
 	return client, nil
+}
+
+func getRoundTripper(disableAuthentication bool) (http.RoundTripper, error) {
+	if disableAuthentication {
+		return sigv4.RoundTripperFunc(http.DefaultTransport.RoundTrip), nil
+	}
+
+	sess, err := session.NewSession()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get AWS-credentials: %w", err)
+	}
+
+	signer, err := sigv4.NewSigner(
+		&sigv4.Config{
+			Service: "es",
+			Region:  *sess.Config.Region,
+		},
+		sess.Config.Credentials,
+		http.DefaultTransport)
+	if err != nil {
+		return nil, fmt.Errorf("could not create sigv4 Http request signer: %w", err)
+	}
+
+	return signer, nil
 }
