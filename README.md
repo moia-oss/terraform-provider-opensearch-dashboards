@@ -72,8 +72,10 @@ machine, follow these steps to start it:
 
 1. install podman or docker (and terraform if it's not already installed ;) )
 2. make sure that ports 9200, 9600 and 5601 are currently not in use 
-3. execute `sysctl -w vm.max_map_count=262144` (this will reset after reboot so add it to your .bashrc or other startup-file if needed)
-4. run `make start_opensearch` (when using docker instead of podman: `make start opensearch CONTAINER_RUNTIME=docker`)
+3. run `make start_opensearch` (when using docker instead of podman: `make start opensearch CONTAINER_RUNTIME=docker`)
+
+If you get an error like `max virtual memory areas vm.max_map_count [65530] likely too low, increase to at least [262144]` 
+in your container logs, running `sysctl -w vm.max_map_count=262144` can help (this resets after reboot so add to .bashrc or other startup-file if needed)
 
 ### Running the smoketest
 
