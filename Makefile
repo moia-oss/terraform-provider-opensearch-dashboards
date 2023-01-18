@@ -53,12 +53,12 @@ restart_opensearch: remove_opensearch start_opensearch
 
 # init_smoke_test always re-initializes the .terraform folder even if it is already present.
 init_smoke_test:
-	cd smoketest && rm -rf .terraform && rm .terraform.lock.hcl && terraform init
+	cd smoketest && rm -rf .terraform && rm -f .terraform.lock.hcl && terraform init
 smoke_test: init_smoke_test smoke_test_fast
 
 # this only creates the .terraform folder if it is not already present
 smoketest/.terraform:
-	cd smoketest && rm -rf .terraform && rm .terraform.lock.hcl && terraform init
+	cd smoketest && rm -rf .terraform && rm -f .terraform.lock.hcl && terraform init
 
 # smoke_test_fast runs faster than smoke_test because we skip the initial cleanup / terraform init step.
 # But it can cause errors in some cases (for example when a new version was released between runs) because if
@@ -67,9 +67,10 @@ smoketest/.terraform:
 # is recommended in most cases
 # But when you are currently developing a new feature, this make-command may save you some annoying waits ;)
 smoke_test_fast: smoketest/.terraform
-	sed -i '' "s/hashes = \[//g" smoketest/.terraform.lock.hcl
-	sed -i '' "s/\]//g" smoketest/.terraform.lock.hcl
-	sed -i '' "s/\".*:.*\",//g" smoketest/.terraform.lock.hcl
+	sed "s/hashes = \[//g" smoketest/.terraform.lock.hcl > tmp1
+	sed "s/\]//g" tmp1 > tmp2
+	sed "s/\".*:.*\",//g" tmp2 > tmp3
+	mv tmp3 smoketest/.terraform.lock.hcl && rm tmp1 && rm tmp2
 	set -e ;\
 	BASE_PATH="smoketest/.terraform/providers/registry.terraform.io/moia-oss/opensearch-dashboards"; \
     VERSION=$$(cd $$BASE_PATH && ls); \
