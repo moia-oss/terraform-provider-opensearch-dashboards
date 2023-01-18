@@ -19,3 +19,4 @@ jobs:
           version: v1.49
       - run: make go/test
       - run: make go/lint
+# TODO: run smoketest

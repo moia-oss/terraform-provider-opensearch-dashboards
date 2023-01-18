@@ -67,11 +67,9 @@ smoketest/.terraform:
 # is recommended in most cases
 # But when you are currently developing a new feature, this make-command may save you some annoying waits ;)
 smoke_test_fast: smoketest/.terraform
-	sed -i -E "s/hashes = \[//g" smoketest/.terraform.lock.hcl
-	sed -i -E "s/\]//g" smoketest/.terraform.lock.hcl
-	sed -i -E "s/\".*:.*\",//g" smoketest/.terraform.lock.hcl
-	# for some reason on mac the sed command creates this weird file which we don't want
-	rm -f smoketest/.terraform.lock.hcl-E
+	sed -i '' "s/hashes = \[//g" smoketest/.terraform.lock.hcl
+	sed -i '' "s/\]//g" smoketest/.terraform.lock.hcl
+	sed -i '' "s/\".*:.*\",//g" smoketest/.terraform.lock.hcl
 	set -e ;\
 	BASE_PATH="smoketest/.terraform/providers/registry.terraform.io/moia-oss/opensearch-dashboards"; \
     VERSION=$$(cd $$BASE_PATH && ls); \
@@ -80,6 +78,7 @@ smoke_test_fast: smoketest/.terraform
     echo Building to $$BUILD_DEST_PATH; \
     CGO_ENABLED=0 go build -o $$BUILD_DEST_PATH . ;
 	cd smoketest && terraform apply -auto-approve
+	cd smoketest && terraform destroy -auto-approve
 
 wait_for_opensearch:
 	set -e ;\
