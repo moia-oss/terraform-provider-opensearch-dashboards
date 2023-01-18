@@ -33,23 +33,23 @@ go/test:
 release: go/test
 	goreleaser build
 
-start_opensearch_container: create_opensearch_container wait_for_opensearch
+start_opensearch: create_opensearch wait_for_opensearch
 
-create_opensearch_container:
+create_opensearch:
 	${CONTAINER_RUNTIME} network create opensearch_network
 	${CONTAINER_RUNTIME} run -d --name=opensearch -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "plugins.security.disabled=true" opensearchproject/opensearch:${OPENSEARCH_VERSION}
 	${CONTAINER_RUNTIME} run -d --name=opensearch_dashboards -p 5601:5601 -e "OPENSEARCH_HOSTS=[\"http://opensearch:9200\"]" -e "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true" opensearchproject/opensearch-dashboards:${OPENSEARCH_VERSION}
 	${CONTAINER_RUNTIME} network connect opensearch_network opensearch
 	${CONTAINER_RUNTIME} network connect opensearch_network opensearch_dashboards
 
-remove_opensearch_container:
+remove_opensearch:
 	${CONTAINER_RUNTIME} stop opensearch
 	${CONTAINER_RUNTIME} rm opensearch
 	${CONTAINER_RUNTIME} stop opensearch_dashboards
 	${CONTAINER_RUNTIME} rm opensearch_dashboards
 	${CONTAINER_RUNTIME} network rm opensearch_network
 
-restart_opensearch_container: remove_opensearch_container start_opensearch_container
+restart_opensearch: remove_opensearch start_opensearch
 
 # init_smoke_test always re-initializes the .terraform folder even if it is already present.
 init_smoke_test:
