@@ -18,6 +18,13 @@ All the resources and data sources has [one or more examples](./examples) to giv
 - [Terraform](https://www.terraform.io/downloads.html) 0.15.0 or newer.
 - [Go](https://golang.org/doc/install) 1.19 (to build the provider plugin)
 
+## Opensearch version
+
+Currently this provider is only tested with Opensearch version 1.3.6
+To update the smoke-test to a new Opensearch version, changes need to be made
+* in the Makefile (env-var VERSION)
+* in the github-actions (tag of the opensearch-docker-image)
+
 ## Quick Start
 
 If you wish to work on the provider, you'll first need [Go](http://www.golang.org) installed on your machine (please check the [requirements](#requirements) before proceeding).
@@ -79,7 +86,6 @@ While actively developing this plugin if you need to run the smoke_test often yo
 
 When you finished testing and want to remove your local opensearch again, execute `make remove_opensearch_container`
 (or when using docker instead of podman: `make remove_opensearch_container CONTAINER_RUNTIME=docker`)
-
 
 ## Using the Provider
 

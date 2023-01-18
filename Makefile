@@ -51,7 +51,7 @@ remove_opensearch_container:
 
 restart_opensearch_container: remove_opensearch_container start_opensearch_container
 
-# init_smoke_test always re-initializes the .terraform folder even if it is already present
+# init_smoke_test always re-initializes the .terraform folder even if it is already present.
 init_smoke_test:
 	cd smoketest && rm -rf .terraform && rm .terraform.lock.hcl && terraform init
 smoke_test: init_smoke_test smoke_test_fast
@@ -77,6 +77,10 @@ smoke_test_fast: smoketest/.terraform
     export BUILD_DEST_PATH="$$BASE_PATH/$$VERSION/$$ENVIRONMENT/terraform-provider-opensearch-dashboards_v$$VERSION"; \
     echo Building to $$BUILD_DEST_PATH; \
     CGO_ENABLED=0 go build -o $$BUILD_DEST_PATH . ;
+# if we already have a terraform state from a previous run which failed in the destroy step,
+# terraform apply might not detect any errors because t doesn't think resources need to be created.
+# So we destroy the state first to be sure changes are actually applied when calling terraform apply
+	cd smoketest && terraform destroy -auto-approve
 	cd smoketest && terraform apply -auto-approve
 	cd smoketest && terraform destroy -auto-approve
 

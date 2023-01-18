@@ -19,4 +19,26 @@ jobs:
           version: v1.49
       - run: make go/test
       - run: make go/lint
-# TODO: run smoketest
+  run-smoketest:
+    name: Run Smoketest
+    runs-on: ubuntu-20.04
+    services:
+      opensearch:
+        image: opensearchproject/opensearch:1.3.6
+        ports:
+          - 9200:9200
+          - 9600:9600
+        env:
+          "discovery.type": single-node
+      opensearch_dashboards:
+        image: opensearchproject/opensearch-dashboards:1.3.6
+        ports:
+          - 5601:5601
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Golang
+        uses: actions/setup-go@v3
+        with:
+          go-version: "1.19.x"
+      - run: make smoke_test
