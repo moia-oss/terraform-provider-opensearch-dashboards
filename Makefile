@@ -58,7 +58,7 @@ smoke_test: init_smoke_test smoke_test_fast
 
 # this only creates the .terraform folder if it is not already present
 smoketest/.terraform:
-	cd smoketest && rm -rf .terraform && rm -f .terraform.lock.hcl && terraform init
+	 $(MAKE) init_smoke_test
 
 # smoke_test_fast runs faster than smoke_test because we skip the initial cleanup / terraform init step.
 # But it can cause errors in some cases (for example when a new version was released between runs) because if
