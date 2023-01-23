@@ -107,14 +107,9 @@ func (p *SavedObjectsProvider) SaveObject(ctx context.Context, obj *SavedObjectO
 		return diag.Errorf("failed to encode saved object as JSON: %v", err)
 	}
 	payload := bytes.NewBuffer(jsonBytes)
-	req, err := http.NewRequestWithContext(
-		ctx,
-		http.MethodPost,
-		url,
-		payload,
-	)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, payload)
 	if err != nil {
-		return diag.FromErr(err)
+		return diag.FromErr(fmt.Errorf("could not create request for %v %v: %w", http.MethodPost, url, err))
 	}
 
 	req.Header.Set("osd-xsrf", "true")
@@ -122,12 +117,12 @@ func (p *SavedObjectsProvider) SaveObject(ctx context.Context, obj *SavedObjectO
 
 	res, err := p.httpClient.Do(req)
 	if err != nil {
-		return diag.FromErr(fmt.Errorf("POST '%s' failed, err %s, statuscode %d, \nrequest_body: %s", req.URL.String(), err, res.StatusCode, string(jsonBytes)))
+		return diag.FromErr(fmt.Errorf("POST '%s' with body '%v' failed with err %w", req.URL.String(), string(jsonBytes), err))
 	}
 	if res.StatusCode != http.StatusOK {
 		rawBody, bodyReadErr := io.ReadAll(res.Body)
 		if bodyReadErr != nil {
-			return diag.FromErr(fmt.Errorf("POST '%s' failed with status %d\nrequest_body: %s", req.URL.String(), err, string(jsonBytes)))
+			return diag.FromErr(fmt.Errorf("POST '%s' failed with status %d\nrequest_body: %s\nresponse body could not be parsed %w", req.URL.String(), res.StatusCode, string(jsonBytes), bodyReadErr))
 		}
 		return diag.FromErr(fmt.Errorf("POST '%s' failed with status %d\nrequest_body: %s\nresponse_body: %s", req.URL.String(), res.StatusCode, string(jsonBytes), string(rawBody)))
 	}
@@ -164,6 +159,6 @@ func (p *SavedObjectsProvider) DeleteObject(ctx context.Context, obj *SavedObjec
 }
 
 func (provider *SavedObjectsProvider) URL(path string) string {
-	base := fmt.Sprintf("%s/_dashboards/api/saved_objects%s", provider.BaseUrl, path)
+	base := fmt.Sprintf("%s/api/saved_objects%s", provider.BaseUrl, path)
 	return base
 }

@@ -18,6 +18,13 @@ All the resources and data sources has [one or more examples](./examples) to giv
 - [Terraform](https://www.terraform.io/downloads.html) 0.15.0 or newer.
 - [Go](https://golang.org/doc/install) 1.19 (to build the provider plugin)
 
+## Opensearch version
+
+Currently this provider is only tested with Opensearch version 1.3.6
+To update the smoke-test to a new Opensearch version, changes need to be made
+* in the Makefile (env-var VERSION)
+* in the github-actions (tag of the opensearch-docker-image)
+
 ## Quick Start
 
 If you wish to work on the provider, you'll first need [Go](http://www.golang.org) installed on your machine (please check the [requirements](#requirements) before proceeding).
@@ -48,13 +55,39 @@ $ ./bin/terraform-provider-opensearch-dashboards_<version>_<os>_<arch>
 ...
 ```
 
-## Testing the Provider
-
+## Testing with Unit Tests
 In order to run unit tests, you can run `make test`.
 
 ```sh
 $ make test
 ```
+
+## Smoketest
+This provider contains a smoketest which can test that the apply works for a few default examples
+against a local opensearch-instance.
+
+### Prereqesites
+To run the smoketest you need a local opensearch. If you do not already have one running on your
+machine, follow these steps to start it:
+
+1. install podman or docker (and terraform if it's not already installed ;) )
+2. make sure that ports 9200, 9600 and 5601 are currently not in use 
+3. run `make start_opensearch` (when using docker instead of podman: `make start opensearch CONTAINER_RUNTIME=docker`)
+
+If you get an error like `max virtual memory areas vm.max_map_count [65530] likely too low, increase to at least [262144]` 
+in your container logs, running `sysctl -w vm.max_map_count=262144` can help (this resets after reboot so add to .bashrc or other startup-file if needed)
+
+### Running the smoketest
+
+`make smoke_test`
+
+While actively developing this plugin if you need to run the smoke_test often you can also use
+`make smoke_test_fast` but this is not as stable, so if you run into errors, fallback to `make smoke_test`.
+
+### Cleanup
+
+When you finished testing and want to remove your local opensearch again, execute `make remove_opensearch`
+(or when using docker instead of podman: `make remove_opensearch CONTAINER_RUNTIME=docker`)
 
 ## Using the Provider
 
