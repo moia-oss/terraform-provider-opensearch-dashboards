@@ -9,7 +9,7 @@ This provider is maintained internally by the [MOIA GmbH](https://moia.io) team.
 
 ## Examples
 
-All the resources and data sources has [one or more examples](./examples) to give you an idea of how to use this provider to build your own OpenSearch SavedObjects infrastructure.
+All the resources and data sources have [one or more examples](./smoketest) to give you an idea of how to use this provider to build your own OpenSearch SavedObjects infrastructure.
 
 # Development Environment Setup
 
