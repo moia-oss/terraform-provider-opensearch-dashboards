@@ -3,7 +3,7 @@ module github.com/moia-oss/terraform-provider-opensearch-dashboards
 go 1.19
 
 require (
-	github.com/aws/aws-sdk-go v1.44.313
+	github.com/aws/aws-sdk-go v1.45.24
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.29.0
 	github.com/rs/zerolog v1.30.0
 	github.com/stretchr/testify v1.8.0 // indirect
