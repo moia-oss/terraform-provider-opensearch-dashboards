@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/aws/aws-sdk-go v1.49.13
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.31.0
-	github.com/rs/zerolog v1.31.0
+	github.com/rs/zerolog v1.32.0
 	github.com/stretchr/testify v1.8.0 // indirect
 )
 
