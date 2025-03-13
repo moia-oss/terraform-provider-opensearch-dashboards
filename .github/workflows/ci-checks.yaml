@@ -41,6 +41,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: setup Terraform
+        uses: hashicorp/setup-terraform@v3
       - name: Install Golang
         uses: actions/setup-go@v5
         with:
