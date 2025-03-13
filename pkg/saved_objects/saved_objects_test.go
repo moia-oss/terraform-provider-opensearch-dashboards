@@ -39,7 +39,7 @@ func TestIgnoreFieldsOnIndexPatternProperty(t *testing.T) {
 			obj:          &SavedObjectOSD{Type: "index-pattern", ID: "mock-pattern", SavedObjectPostPayload: SavedObjectPostPayload{Attributes: map[string]any{}, References: []Reference{}}},
 			handlerFunc: func(w http.ResponseWriter, _ *http.Request) {
 				obj := SavedObjectOSD{Type: "index-pattern", ID: "mock-pattern", SavedObjectPostPayload: SavedObjectPostPayload{Attributes: map[string]any{
-					"fields": map[string]interface{}{
+					"fields": map[string]any{
 						"fieldA": "Hello world",
 					},
 				}, References: []Reference{}}}
@@ -57,7 +57,7 @@ func TestIgnoreFieldsOnIndexPatternProperty(t *testing.T) {
 			obj:          &SavedObjectOSD{Type: "search", ID: "mock-search", SavedObjectPostPayload: SavedObjectPostPayload{Attributes: map[string]any{}, References: []Reference{}}},
 			handlerFunc: func(w http.ResponseWriter, _ *http.Request) {
 				obj := SavedObjectOSD{Type: "search", ID: "mock-search", SavedObjectPostPayload: SavedObjectPostPayload{Attributes: map[string]any{
-					"fields": map[string]interface{}{
+					"fields": map[string]any{
 						"fieldA": "Hello world",
 					},
 				}, References: []Reference{}}}
@@ -75,7 +75,7 @@ func TestIgnoreFieldsOnIndexPatternProperty(t *testing.T) {
 			obj:          &SavedObjectOSD{Type: "index-pattern", ID: "mock-pattern", SavedObjectPostPayload: SavedObjectPostPayload{Attributes: map[string]any{}, References: []Reference{}}},
 			handlerFunc: func(w http.ResponseWriter, _ *http.Request) {
 				obj := SavedObjectOSD{Type: "index-pattern", ID: "mock-pattern", SavedObjectPostPayload: SavedObjectPostPayload{Attributes: map[string]any{
-					"fields": map[string]interface{}{
+					"fields": map[string]any{
 						"fieldA": "Hello world",
 					},
 				}, References: []Reference{}}}
@@ -102,7 +102,7 @@ func TestIgnoreFieldsOnIndexPatternProperty(t *testing.T) {
 				t.Error(diag)
 			}
 
-			attr := map[string]interface{}{}
+			attr := map[string]any{}
 			if obj != nil {
 				marshErr := json.Unmarshal([]byte(obj.Attributes), &attr)
 				if marshErr != nil {
