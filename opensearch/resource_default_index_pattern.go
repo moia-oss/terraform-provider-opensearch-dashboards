@@ -2,8 +2,6 @@ package opensearch
 
 import (
 	"context"
-	"fmt"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/rs/zerolog/log"
@@ -55,7 +53,7 @@ func defaultIndexPatternRead(ctx context.Context, d *schema.ResourceData, m any)
 	}
 	err := d.Set("index_pattern_id", resp.IndexPatternId)
 	if err != nil {
-		return diag.Errorf(fmt.Sprintf("could not read index_pattern_id after fetching from api: %v+", err))
+		return diag.Errorf("could not read index_pattern_id after fetching from api: %v+", err)
 	}
 
 	d.SetId("default-pattern")
