@@ -1,11 +1,10 @@
 module github.com/moia-oss/terraform-provider-opensearch-dashboards
 
 go 1.24.1
-
 require (
 	github.com/aws/aws-sdk-go v1.55.6
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.36.1
-	github.com/rs/zerolog v1.33.0
+	github.com/rs/zerolog v1.34.0
 )
 
 require (
