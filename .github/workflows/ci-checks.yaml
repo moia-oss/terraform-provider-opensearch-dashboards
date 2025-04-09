@@ -16,7 +16,7 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v7
         with:
-          version: v1.64.7
+          version: v2.0
       - run: make go/test
       - run: make go/lint
   run-smoketest:
