@@ -16,7 +16,7 @@ All the resources and data sources have [one or more examples](./smoketest) to g
 ## Requirements
 
 - [Terraform](https://www.terraform.io/downloads.html) 0.15.0 or newer.
-- [Go](https://golang.org/doc/install) 1.19 (to build the provider plugin)
+- [Go](https://golang.org/doc/install) 1.24 (to build the provider plugin)
 
 ## Opensearch version
 
