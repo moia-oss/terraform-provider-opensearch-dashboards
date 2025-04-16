@@ -1,6 +1,7 @@
 module github.com/moia-oss/terraform-provider-opensearch-dashboards
 
 go 1.24.1
+
 require (
 	github.com/aws/aws-sdk-go v1.55.6
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.36.1
@@ -39,7 +40,7 @@ require (
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/zclconf/go-cty v1.16.2 // indirect
 	golang.org/x/mod v0.24.0 // indirect
-	golang.org/x/net v0.37.0 // indirect
+	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/sync v0.12.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
