@@ -1,0 +1,3 @@
+Request: Add the following github users as owners to our terraform registry: @moia-pipeline @oppermax @cbrgm @ktreptow @marcelmindemann @niklasfaschingmoia
+Registry Link: https://registry.terraform.io/publish/provider/github/moia-oss
+Request by: max.opperman@moia.io
