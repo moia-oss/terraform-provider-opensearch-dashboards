@@ -20,17 +20,15 @@ jobs:
       - run: make go/test
       - run: make go/lint
       - run: make docs
-      - name: Check if changeset is not empty
-        id: changes
-        run: |
-          if [ "$(git diff --name-only HEAD^ | wc -l)" -gt 0 ]; then
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Run only if changeset is not empty
+      - name: Get changed files in the docs folder
+        id: changed-files-specific
+        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46
+        with:
+          files: docs/**
+
+      - name: Notify if changeset is not empty
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
         uses: thollander/actions-comment-pull-request@v3
-        if: steps.changes.outputs.changed == 'true'
         with:
             message: |
                 #### Documentation :book: `${{ steps.docs.outcome }}`
