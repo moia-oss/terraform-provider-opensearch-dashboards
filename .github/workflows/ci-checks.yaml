@@ -31,12 +31,13 @@ jobs:
         uses: thollander/actions-comment-pull-request@v3
         with:
             message: |
-                #### Documentation :book: `${{ steps.docs.outcome }}`
-                #### Documentation is not up to date. Generate with 'make docs' and check in changes!"
+                #### Documentation :book:
+                #### Documentation is not up to date. Generate with `make docs` and check in changes!"
             comment-tag: "tf-docs"
 
-      - if: steps.changed-files-specific.outputs.any_changed == 'true'
-        run: echo "Documentation needs to be updated" && os.Exit(1)
+      - name: Fail if documentation is not up to date
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        run: echo "Documentation needs to be updated" && exit 1
 
   run-smoketest:
     name: Run Smoketest
