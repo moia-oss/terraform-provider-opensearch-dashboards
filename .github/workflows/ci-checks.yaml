@@ -19,6 +19,24 @@ jobs:
           version: v2.0
       - run: make go/test
       - run: make go/lint
+      - run: make docs
+      - name: Check if changeset is not empty
+        id: changes
+        run: |
+          if [ "$(git diff --name-only HEAD^ HEAD | wc -l)" -gt 0 ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Run only if changeset is not empty
+        uses: thollander/actions-comment-pull-request@v3
+        if: steps.changes.outputs.changed == 'true'
+        with:
+            message: |
+                #### Documentation :book: `${{ steps.docs.outcome }}`
+                #### Documentation is not up to date. Generate with 'make docs' and check in changes!"
+            comment-tag: "tf-docs"
+
   run-smoketest:
     name: Run Smoketest
     runs-on: ubuntu-24.04
