@@ -23,7 +23,7 @@ jobs:
       - name: Check if changeset is not empty
         id: changes
         run: |
-          if [ "$(git diff --name-only HEAD^ HEAD | wc -l)" -gt 0 ]; then
+          if [ "$(git diff --name-only HEAD^ | wc -l)" -gt 0 ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           else
             echo "changed=false" >> "$GITHUB_OUTPUT"
