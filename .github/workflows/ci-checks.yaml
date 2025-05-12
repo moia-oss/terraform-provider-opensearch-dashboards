@@ -26,6 +26,8 @@ jobs:
         with:
           files: docs/**
 
+      - run: git status
+
       - name: Notify if changeset is not empty
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         uses: thollander/actions-comment-pull-request@v3
