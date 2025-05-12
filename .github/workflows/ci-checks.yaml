@@ -48,7 +48,7 @@ jobs:
         uses: thollander/actions-comment-pull-request@v3
         with:
           comment-tag: "tf-docs"
-          mode: delete-on-completion
+          mode: delete
 
   run-smoketest:
     name: Run Smoketest
