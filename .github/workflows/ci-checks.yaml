@@ -22,14 +22,17 @@ jobs:
       - run: make docs
       - name: Get changed files in the docs folder
         id: changed-files-specific
-        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46
-        with:
-          files: docs/**
-
-      - run: git status
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "Changes detected"
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "No changes"
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Notify if changeset is not empty
-        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        if: steps.changed-files-specific.outputs.changes == 'true'
         uses: thollander/actions-comment-pull-request@v3
         with:
             message: |
@@ -38,7 +41,7 @@ jobs:
             comment-tag: "tf-docs"
 
       - name: Fail if documentation is not up to date
-        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        if: steps.changed-files-specific.outputs.changes == 'true'
         run: echo "Documentation needs to be updated" && exit 1
 
       - name: Delete comment if it exists
