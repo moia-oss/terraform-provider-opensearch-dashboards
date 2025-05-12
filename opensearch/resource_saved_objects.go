@@ -28,29 +28,34 @@ import (
 
 func resourceSavedObjects() *schema.Resource {
 	return &schema.Resource{
+		Description:   "Manages saved objects in OpenSearch Dashboards.",
 		ReadContext:   resourceSavedObjectRead,
 		CreateContext: resourceSavedObjectWrite,
 		UpdateContext: resourceSavedObjectWrite,
 		DeleteContext: resourceSavedObjectsDelete,
 		Schema: map[string]*schema.Schema{
 			"obj_id": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Description: "ID of the saved object.",
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
 			},
 			"type": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Description: "Type of the saved object.",
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
 			},
 			"attributes": {
 				// This will contain stringified JSON. We'll just send the content to the OpenSearch Dashboards API
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Attributes of the saved object.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 			"references": {
-				Type:     schema.TypeSet,
-				Optional: true,
+				Description: "References of the saved object.",
+				Type:        schema.TypeSet,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
