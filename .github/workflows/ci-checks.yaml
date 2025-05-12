@@ -35,6 +35,9 @@ jobs:
                 #### Documentation is not up to date. Generate with 'make docs' and check in changes!"
             comment-tag: "tf-docs"
 
+      - if: steps.changed-files-specific.outputs.any_changed == 'true'
+        run: echo "Documentation needs to be updated" && os.Exit(1)
+
   run-smoketest:
     name: Run Smoketest
     runs-on: ubuntu-24.04
