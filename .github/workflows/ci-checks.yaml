@@ -2,8 +2,8 @@ name: CI Tasks
 on: pull_request
 
 jobs:
-  test-lint:
-    name: Test and Lint
+  test-lint-docs:
+    name: Test, Lint and Docs
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -38,6 +38,12 @@ jobs:
       - name: Fail if documentation is not up to date
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: echo "Documentation needs to be updated" && exit 1
+
+      - name: Delete comment if it exists
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          comment-tag: "tf-docs"
+          mode: delete-on-completion
 
   run-smoketest:
     name: Run Smoketest
