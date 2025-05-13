@@ -2,8 +2,8 @@ name: CI Tasks
 on: pull_request
 
 jobs:
-  test-lint:
-    name: Test and Lint
+  test-lint-docs:
+    name: Test, Lint and Docs
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -19,6 +19,37 @@ jobs:
           version: v2.0
       - run: make go/test
       - run: make go/lint
+      - run: make docs
+      - name: Get changed files in the docs folder
+        id: changed-files-specific
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "Changes detected"
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "No changes"
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Notify if changeset is not empty
+        if: steps.changed-files-specific.outputs.changes == 'true'
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+            message: |
+                #### Documentation :book:
+                #### Documentation is not up to date. Generate with `make docs` and check in changes!"
+            comment-tag: "tf-docs"
+
+      - name: Fail if documentation is not up to date
+        if: steps.changed-files-specific.outputs.changes == 'true'
+        run: echo "Documentation needs to be updated" && exit 1
+
+      - name: Delete comment if it exists
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          comment-tag: "tf-docs"
+          mode: delete
+
   run-smoketest:
     name: Run Smoketest
     runs-on: ubuntu-24.04

@@ -116,3 +116,7 @@ wait_for_opensearch:
 	done; \
 	echo; \
 	echo "Opensearch Dashboards has started on http://localhost:5601";
+
+.PHONY: docs
+docs:
+	$(GO) tool github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs generate --provider-name opensearch

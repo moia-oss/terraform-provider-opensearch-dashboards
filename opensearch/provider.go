@@ -41,26 +41,22 @@ func Provider() *schema.Provider {
 				Description: "The Opensearch base url",
 			},
 			"sync_index_pattern_fields": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-				Description: "Usually in index-patterns the fields are automatically generated from the matched indices. " +
-					"If you instead explicitly want to track index-pattern-fields with terraform, set this value to true.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
+				Description: "Usually in index-patterns the fields are automatically generated from the matched indices. If you instead explicitly want to track index-pattern-fields with terraform, set this value to true.",
 			},
 			"disable_authentication": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-				Description: "In all production environments, authentication is expected but with this flag it can be " +
-					"disabled for example for the purpose of local testing",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
+				Description: "In all production environments, authentication is expected but with this flag it can be disabled for example for the purpose of local testing",
 			},
 			"path_prefix": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "/_dashboards",
-				Description: "prefix to be prepended to any path. The default is '/_dashboards' to prevent breaking changes " +
-					"since this is needed for AWS Opensearch on which this provider was first used. You will want to set this to an " +
-					"empty string for development on a local Opensearch for example",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Default:     "/_dashboards",
+				Description: "prefix to be prepended to any path. The default is '/_dashboards' to prevent breaking change since this is needed for AWS Opensearch on which this provider was first used. You will want to set this to an empty string for development on a local Opensearch for example",
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{

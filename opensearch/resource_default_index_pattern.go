@@ -10,14 +10,16 @@ import (
 
 func resourceDefaultIndexPattern() *schema.Resource {
 	return &schema.Resource{
+		Description:   "The default index pattern defines the default index pattern.",
 		ReadContext:   defaultIndexPatternRead,
 		CreateContext: defaultIndexPatternWrite,
 		UpdateContext: defaultIndexPatternWrite,
 		DeleteContext: defaultIndexPatternDelete,
 		Schema: map[string]*schema.Schema{
 			"index_pattern_id": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "The unique identifier of the index pattern.",
+				Type:        schema.TypeString,
+				Required:    true,
 			},
 		},
 	}
