@@ -14,7 +14,7 @@ jobs:
           go-version: "1.24.x"
       - run: go mod tidy && go mod vendor
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v7
+        uses: golangci/golangci-lint-action@v8
         with:
           version: v2.0
       - run: make go/test
