@@ -73,7 +73,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
       - name: setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
       - name: Install Golang
         uses: actions/setup-go@v6
         with:
