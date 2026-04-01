@@ -5,7 +5,7 @@ go 1.24.0
 require (
 	github.com/aws/aws-sdk-go v1.55.7
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.38.1
-	github.com/rs/zerolog v1.34.0
+	github.com/rs/zerolog v1.35.0
 )
 
 require (
